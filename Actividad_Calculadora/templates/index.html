@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/viz.js@2.1.2/viz.js"></script>
+    <title>Calculadora con grafo</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .calculator button {
+            font-size: 1.2rem;
+            padding: 15px;
+            background-color: #03588C;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .calculator button:hover {
+            background-color: #049DD9;
+        }
+        .calculator input {
+            grid-column: span 4;
+            font-size: 1.5rem;
+            padding: 10px;
+            text-align: right;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .canvas-container {
+            background: #ffffff;
+            width: 300px;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .valido {
+            background-color: #2ecc71;
+            color: white;
+            border: 1px solid #27ae60;
+        }
+        .no-valido {
+            background-color: #e74c3c;
+            color: white;
+            border: 1px solid #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="container">
+            <div class="calculator">
+                <!-- Formulario con el valor que se mantiene -->
+                <form method="POST" action="/process" style="grid-column: span 4;">
+                    <input type="text" id="result" name="input_string" value="{{ request.form['input_string'] if request.form['input_string'] else '' }}" />
+                    <button type="submit" style="grid-column: span 4; background-color: #049DD9;">Enviar</button>
+                </form>
+
+                <!-- Botones de la calculadora, fuera del formulario -->
+                <button type="button" onclick="appendValue('7')">7</button>
+                <button type="button" onclick="appendValue('8')">8</button>
+                <button type="button" onclick="appendValue('9')">9</button>
+                <button type="button" onclick="appendValue('/')">/</button>
+                <button type="button" onclick="appendValue('4')">4</button>
+                <button type="button" onclick="appendValue('5')">5</button>
+                <button type="button" onclick="appendValue('6')">6</button>
+                <button type="button" onclick="appendValue('*')">*</button>
+                <button type="button" onclick="appendValue('1')">1</button>
+                <button type="button" onclick="appendValue('2')">2</button>
+                <button type="button" onclick="appendValue('3')">3</button>
+                <button type="button" onclick="appendValue('-')">-</button>
+                <button type="button" onclick="appendValue('0')">0</button>
+                <button type="button" onclick="appendValue('.')">.</button>
+                <button type="button" onclick="calculate()">=</button>
+                <button type="button" onclick="appendValue('+')">+</button>
+                <button type="button" onclick="clearResult()" style="grid-column: span 4; background-color: #e63946;">Borrar</button>
+            </div>
+        </div>
+
+        <!-- grafo --> <div class="canvas-container"> <div id="graph"></div> </div>
+
+        <div id="resultado">
+            {% if result is not none %}
+                <h2>Resultado: {{ result }}</h2>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+        function appendValue(value) {
+            var result = document.getElementById('result');
+            result.value += value; 
+        }
+
+        // Función para realizar el cálculo
+        function calculate() {
+            var result = document.getElementById('result');
+            try {
+                result.value = eval(result.value);
+            } catch (e) {
+                result.value = "Error"; 
+            }
+        }
+
+        // Función para borrar el campo de entrada
+        function clearResult() {
+            var result = document.getElementById('result');
+            result.value = ''; 
+        }
+
+        
+    </script>
+</body>
+</html>
